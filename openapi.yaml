@@ -1071,8 +1071,6 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/EnumJobApplicationStatus'
-        frontendStatus:
-          $ref: '#/components/schemas/EnumJobApplicationFrontendStatus'
     JobApplication:
       type: object
       properties:
@@ -1086,8 +1084,6 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/EnumJobApplicationStatus'
-        frontendStatus:
-          $ref: '#/components/schemas/EnumJobApplicationFrontendStatus'
         dateSubmitted:
           type: string
           format: date-time
@@ -1169,24 +1165,6 @@ components:
         - "WITHDRAWN"
         - "ONHOLD"
     EnumJobApplicationStatus:
-      type: string
-      enum:
-        - "DRAFT"
-        - "NEW"
-        - "NOTSUITABLE"
-        - "REJECTED"
-        - "WITHDRAWN"
-        - "SHORTLISTED"
-        - "IN.PROGRESS"
-        - "OFFER.PENDING"
-        - "OFFER.APPROVER.ACCEPTED"
-        - "OFFER.APPROVER.REJECTED"
-        - "OFFER.SENT"
-        - "OFFER.ACCEPTED"
-        - "OFFER.REJECTED"
-        - "OFFER.ADMIN.REJECTED.WITH.EMAIL"
-        - "OFFER.ADMIN.REJECTED.WITHOUT.EMAIL"
-    EnumJobApplicationFrontendStatus:
       type: string
       enum:
         - "NEW"
@@ -1279,6 +1257,8 @@ components:
           type: string
         videoPosition:
           type: string
+        isEnable:
+          type: boolean
     JobAdItem:
       type: object
       properties:
@@ -1294,6 +1274,8 @@ components:
         dateEnd:
           type: string
           format: date-time
+        isEnable:
+          type: boolean
     JobCategory:
       type: object
       properties:

@@ -1159,13 +1159,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "in": "query",
-                        "name": "isEnable",
-                        "schema": {
-                            "type": "boolean"
-                        }
                     }
                 ],
                 "responses": {
@@ -1689,9 +1682,6 @@
                     },
                     "status": {
                         "$ref": "#/components/schemas/EnumJobApplicationStatus"
-                    },
-                    "frontendStatus": {
-                        "$ref": "#/components/schemas/EnumJobApplicationFrontendStatus"
                     }
                 }
             },
@@ -1712,9 +1702,6 @@
                     },
                     "status": {
                         "$ref": "#/components/schemas/EnumJobApplicationStatus"
-                    },
-                    "frontendStatus": {
-                        "$ref": "#/components/schemas/EnumJobApplicationFrontendStatus"
                     },
                     "dateSubmitted": {
                         "type": "string",
@@ -1833,26 +1820,6 @@
                 ]
             },
             "EnumJobApplicationStatus": {
-                "type": "string",
-                "enum": [
-                    "DRAFT",
-                    "NEW",
-                    "NOTSUITABLE",
-                    "REJECTED",
-                    "WITHDRAWN",
-                    "SHORTLISTED",
-                    "IN.PROGRESS",
-                    "OFFER.PENDING",
-                    "OFFER.APPROVER.ACCEPTED",
-                    "OFFER.APPROVER.REJECTED",
-                    "OFFER.SENT",
-                    "OFFER.ACCEPTED",
-                    "OFFER.REJECTED",
-                    "OFFER.ADMIN.REJECTED.WITH.EMAIL",
-                    "OFFER.ADMIN.REJECTED.WITHOUT.EMAIL"
-                ]
-            },
-            "EnumJobApplicationFrontendStatus": {
                 "type": "string",
                 "enum": [
                     "NEW",
