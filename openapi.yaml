@@ -1,0 +1,1262 @@
+openapi: 3.0.0
+info:
+  title: Recruitment's Public API
+  description: |-
+    Collection of Public API for 3rd party integration with ELMO's Recruitment.
+  version: v1
+servers:
+  - url: https://[tenant].elmotalent.com.au/api/recruitment/p/v1
+
+paths:
+  /candidates:
+    get:
+      tags:
+        - Candidate
+      summary: Get the list of candidates.
+      description:
+        This endpoint retrieves a list of candidates that in the system and not necessarily have a job application.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: itemsPerPage
+          schema:
+            type: integer
+        - in: query
+          name: firstName
+          schema:
+            type: string
+        - in: query
+          name: lastName
+          schema:
+            type: string
+        - in: query
+          name: email
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  candidates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CandidateItem'
+                  pageNumber:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  totalCount:
+                    type: integer
+        400:
+          description: Invalid query.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+    post:
+      tags:
+        - Candidate
+      summary: Create a new candidate.
+      requestBody:
+        description: Create a new candidate record.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+      responses:
+        201:
+          description: Created
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /candidates/{id}:
+    get:
+      tags:
+        - Candidate
+      summary: Get all the Candidate's information.
+      description: Candidates contact details, experience, education, etc.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the candidate to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-applications:
+    get:
+      tags:
+        - Job Application
+      summary: Get the list of job applications.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: itemsPerPage
+          schema:
+            type: integer
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: requisitionId
+          schema:
+            type: string
+        - in: query
+          name: applicantId
+          schema:
+            type: string
+        - in: query
+          name: applicantType
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  applications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/JobApplicationItem'
+                  pageNumber:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  totalCount:
+                    type: integer
+        400:
+          description: Invalid query.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+    post:
+      tags:
+        - Job Application
+      summary: Create a new job application.
+      requestBody:
+        description: Create a new Job Application for a Candidate.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobApplication'
+      responses:
+        201:
+          description: Created
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-applications/{id}:
+    get:
+      tags:
+        - Job Application
+      summary: Get all the Job Application's information.
+      description: |
+        Job applications are not required to be linked to a specific job advertisement, but they will always be associated with a corresponding requisition.
+
+        For accurately identifying if Job Application is still valid, we have to check Requisition Status as well if it's ie Finalised.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job application to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobApplication'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-applications/{id}/resume:
+    put:
+      tags:
+        - Job Application
+      summary: Upload the candidate's resume to the job application.
+      description: |
+        Upload the candidate's resume to the job application.
+
+        It overrides any existing resume in the application.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job application.
+      responses:
+        201:
+          description: Created
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        413:
+          description: Exceeded the file size limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        415:
+          description: Invalid file type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-applications/{id}/cover-letter:
+    put:
+      tags:
+        - Job Application
+      summary: Upload the candidate's cover letter to the job application.
+      description: |
+        Upload the candidate's cover letter to the job application.
+
+        It overrides any existing cover letter in the application.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job application.
+      responses:
+        201:
+          description: Created
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        413:
+          description: Exceeded the file size limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        415:
+          description: Invalid file type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /requisitions:
+    get:
+      tags:
+        - Requisition
+      summary: Get the list of requisitions.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: itemsPerPage
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  applications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RequisitionItem'
+                  pageNumber:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  totalCount:
+                    type: integer
+        400:
+          description: Invalid query.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /requisitions/{id}:
+    get:
+      tags:
+        - Requisition
+      summary: Get all the Requisition's information.
+      description: |
+        Requisition is the basis of everything, it is required on making a JobAd and also when making Job Application.
+
+        The requisition status should affect how Job Ad and Job Application should be treated.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the requisition to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Requisition'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-locations/{id}:
+    get:
+      tags:
+        - Job Location
+      summary: Get all the Job Location's information.
+      description: Detailed information of the Job Location.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job location to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobLocation'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-categories/{id}:
+    get:
+      tags:
+        - Job Category
+      summary: Get all the Job Category's information.
+      description: Detailed information of the Job Category.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job location to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCategory'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-types/{id}:
+    get:
+      tags:
+        - Job Type
+      summary: Get all the Job Type's information.
+      description: Detailed information of the Job Type.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job location to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobType'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-ads:
+    get:
+      tags:
+        - Job Ad
+      summary: Get the list of job ads.
+      description: Fetches list of ads.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: itemsPerPage
+          schema:
+            type: integer
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: requisitionId
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobAds:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/JobAdItem'
+                  pageNumber:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  totalCount:
+                    type: integer
+        400:
+          description: Invalid query.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-ads/{id}:
+    get:
+      tags:
+        - Job Ad
+      summary: Get all the Job Ad's information.
+      description: Detailed information of the Job Ad.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job ad to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAd'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+  /job-ads/{id}/screening-questions:
+    get:
+      tags:
+        - Job Ad
+      summary: Get all the Job Ad's information.
+      description: Detailed information of the Job Ad.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job ad to get.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questionAnswers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/JobApplicationQuestionAnswer'
+                  pageNumber:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  totalCount:
+                    type: integer
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        410:
+          description: Record is found but not available anymore.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        500:
+          description: Internal Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+components:
+  schemas:
+    CandidateItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "10"
+        firstName:
+          type: string
+          example: "John"
+          minLength: 3
+          maxLength: 255
+        lastName:
+          type: string
+          example: "Doe"
+          minLength: 3
+          maxLength: 255
+        email:
+          type: string
+          example: "john.doe@noreply.com"
+          format: email
+          maxLength: 60
+        isActive:
+          type: boolean
+        addressLine1:
+          type: string
+          maxLength: 255
+        addressLine2:
+          type: string
+          maxLength: 255
+        suburb:
+          type: string
+          maxLength: 255
+        state:
+          type: string
+          maxLength: 255
+        postcode:
+          type: string
+          maxLength: 30
+        country:
+          type: string
+          maxLength: 30
+        homePhone:
+          type: string
+          maxLength: 30
+        mobile:
+          type: string
+          maxLength: 30
+    Candidate:
+      type: object
+      required:
+          - firstName
+          - lastName
+          - email
+      properties:
+        id:
+          type: string
+          example: "10"
+        firstName:
+          type: string
+          example: "John"
+          minLength: 3
+          maxLength: 255
+        lastName:
+          type: string
+          example: "Doe"
+          minLength: 3
+          maxLength: 255
+        email:
+          type: string
+          example: "john.doe@noreply.com"
+          format: email
+          maxLength: 60
+        isActive:
+          type: boolean
+        addressLine1:
+          type: string
+          maxLength: 255
+        addressLine2:
+          type: string
+          maxLength: 255
+        suburb:
+          type: string
+          maxLength: 255
+        state:
+          type: string
+          maxLength: 255
+        postcode:
+          type: string
+          maxLength: 30
+        country:
+          type: string
+          maxLength: 30
+        homePhone:
+          type: string
+          maxLength: 30
+        mobile:
+          type: string
+          maxLength: 30
+        educations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Education'
+        languages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+        experiences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Experience'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
+    Education:
+      type: object
+      required:
+        - school
+        - degree
+      properties:
+        id:
+          type: string
+        school:
+          type: string
+        degree:
+          type: string
+        fieldOfStudy:
+          type: string
+        activities:
+          type: string
+        description:
+          type: string
+        startDateYear:
+          type: integer
+        endDateYear:
+          type: integer
+    Language:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        ratingSpeaking:
+          type: integer
+        ratingReading:
+          type: integer
+        ratingWriting:
+          type: integer
+    Experience:
+      type: object
+      required:
+        - positionTitle
+        - companyName
+      properties:
+        id:
+          type: string
+        positionTitle:
+          type: string
+        companyName:
+          type: string
+        companyAddress:
+          type: string
+        startDateMonth:
+          type: string
+        startDateYear:
+          type: integer
+        endDateMonth:
+          type: string
+        endDateYear:
+          type: integer
+        isCurrent:
+          type: boolean
+    Skill:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: string
+        title:
+          type: integer
+    JobApplicationItem:
+      type: object
+      properties:
+        id:
+          type: string
+        requisitionId:
+          type: string
+        applicantId:
+          type: string
+        applicantType:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnumJobApplicationStatus'
+        frontendStatus:
+          $ref: '#/components/schemas/EnumJobApplicationFrontendStatus'
+    JobApplication:
+      type: object
+      properties:
+        id:
+          type: string
+        jobAdId:
+          type: string
+        applicantId:
+          type: string
+        applicantType:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnumJobApplicationStatus'
+        frontendStatus:
+          $ref: '#/components/schemas/EnumJobApplicationFrontendStatus'
+        dateSubmitted:
+          type: string
+          format: date-time
+        questionAnswers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobApplicationQuestionAnswer'
+    CreateJobApplication:
+      type: object
+      properties:
+        jobAdId:
+          type: string
+        candidateId:
+          type: string
+    RequisitionItem:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnumRequisitionStatus'
+        title:
+          type: string
+    Requisition:
+      type: object
+      required:
+        - title
+        - positionId
+        - departmentId
+        - locationId
+        - numberOfPositions
+      properties:
+        id:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnumRequisitionStatus'
+        title:
+          type: string
+        positionId:
+          type: string
+        departmentId:
+          type: string
+        locationId:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        dateFinalised:
+          type: string
+          format: date-time
+        dateOpened:
+          type: string
+          format: date-time
+        dateDue:
+          type: string
+          format: date-time
+        numberOfPositions:
+          type: integer
+    ErrorGetResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        transactionId:
+          type: string
+    EnumRequisitionStatus:
+      type: string
+      enum:
+        - "PENDING"
+        - "OPEN"
+        - "OVERDUE"
+        - "CLOSE"
+        - "FINALISED"
+        - "WITHDRAWN"
+        - "ONHOLD"
+    EnumJobApplicationStatus:
+      type: string
+      enum:
+        - "DRAFT"
+        - "NEW"
+        - "NOTSUITABLE"
+        - "REJECTED"
+        - "WITHDRAWN"
+        - "SHORTLISTED"
+        - "IN.PROGRESS"
+        - "OFFER.PENDING"
+        - "OFFER.APPROVER.ACCEPTED"
+        - "OFFER.APPROVER.REJECTED"
+        - "OFFER.SENT"
+        - "OFFER.ACCEPTED"
+        - "OFFER.REJECTED"
+        - "OFFER.ADMIN.REJECTED.WITH.EMAIL"
+        - "OFFER.ADMIN.REJECTED.WITHOUT.EMAIL"
+    EnumJobApplicationFrontendStatus:
+      type: string
+      enum:
+        - "NEW"
+        - "UNSUCCESSFUL.NOTSUITABLE"
+        - "UNSUCCESSFUL.REJECTED"
+        - "UNSUCCESSFUL.WITHDRAW"
+        - "SHORTLISTED"
+        - "IN.PROGRESS"
+        - "OFFER.PENDING"
+        - "OFFER.ACCEPTED"
+        - "OFFER.REJECTED"
+    JobApplicationQuestionAnswer:
+      type: object
+      required:
+        - question
+        - questionType
+        - answerValue
+        - answerText
+      properties:
+        questionId:
+          type: string
+        question:
+          type: string
+        questionType:
+          $ref: '#/components/schemas/EnumQuestionTypes'
+        answerValue:
+          type: string
+        answerText:
+          type: string
+    JobAd:
+      type: object
+      required:
+        - title
+        - dateStart
+        - dateEnd
+        - salaryMin
+        - salaryMax
+        - requisitionId
+        - jobLocationId
+        - jobCategoryIds
+        - jobTypeId
+        - introduction
+        - description
+        - shortDescription
+        - portalIds
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        dateStart:
+          type: string
+          format: date-time
+        dateEnd:
+          type: string
+          format: date-time
+        salaryMin:
+          type: number
+          format: double
+        salaryMax:
+          type: number
+          format: double
+        requisitionId:
+          type: string
+        jobLocationId:
+          type: string
+        jobCategoryIds:
+          type: array
+          items:
+            type: string
+        jobTypeId:
+          type: string
+        introduction:
+          type: string
+        description:
+          type: string
+        shortDescription:
+          type: string
+        skillsAndExperiences:
+          type: string
+        isActive:
+          type: boolean
+        portalIds:
+          type: array
+          items:
+            type: string
+        videoUrl:
+          type: string
+        videoPosition:
+          type: string
+    JobAdItem:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        dateStart:
+          type: string
+          format: date-time
+        dateEnd:
+          type: string
+          format: date-time
+    JobCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+    JobLocation:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+    JobType:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+    EnumQuestionTypes:
+      type: string
+      enum:
+        - "TEXT"
+        - "DATE"
+        - "SELECT"
+        - "MULTISELECT"
+        - "FILE"
