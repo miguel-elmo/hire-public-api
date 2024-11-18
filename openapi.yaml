@@ -3,9 +3,9 @@ info:
   title: Recruitment's Public API
   description: |-
     Collection of Public API for 3rd party integration with ELMO's Recruitment.
-  version: v1
+  version: v2
 servers:
-  - url: https://[tenant].elmotalent.com.au/api/recruitment/p/v1
+  - url: https://[tenant].elmotalent.com.au/api/recruitment/v2
 
 paths:
   /candidates:
@@ -286,6 +286,45 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorGetResponse'
   /job-applications/{id}/resume:
+    get:
+      tags:
+        - Job Application
+      summary: Download the candidate's resume from the job application.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job application.
+      responses:
+        200:
+          description: File stream.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/doc:
+              schema:
+                type: string
+                format: binary
+            application/ms-doc:
+              schema:
+                type: string
+                format: binary
+            application/msword:
+              schema:
+                type: string
+                format: binary
     put:
       tags:
         - Job Application
@@ -329,6 +368,45 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorGetResponse'
   /job-applications/{id}/cover-letter:
+    get:
+      tags:
+        - Job Application
+      summary: Download the candidate's cover letter from the job application.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the job application.
+      responses:
+        200:
+          description: File stream.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+              schema:
+                type: string
+                format: binary
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/doc:
+              schema:
+                type: string
+                format: binary
+            application/ms-doc:
+              schema:
+                type: string
+                format: binary
+            application/msword:
+              schema:
+                type: string
+                format: binary
     put:
       tags:
         - Job Application
