@@ -48,12 +48,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/CandidateItem'
-                  pageNumber:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  totalCount:
-                    type: integer
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         400:
           description: Invalid query.
           content:
@@ -85,6 +81,30 @@ paths:
       responses:
         201:
           description: Created
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        422:
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsGetResponse'
         500:
           description: Internal Server error.
           content:
@@ -183,12 +203,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/JobApplicationItem'
-                  pageNumber:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  totalCount:
-                    type: integer
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         400:
           description: Invalid query.
           content:
@@ -220,12 +236,30 @@ paths:
       responses:
         201:
           description: Created
-        403:
-          description: Forbidden.
+        400:
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorGetResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGetResponse'
+        422:
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsGetResponse'
         500:
           description: Internal Server error.
           content:
@@ -333,6 +367,8 @@ paths:
         Upload the candidate's resume to the job application.
 
         It overrides any existing resume in the application.
+
+        Max file size is 10mb.
       parameters:
         - in: path
           name: id
@@ -415,6 +451,8 @@ paths:
         Upload the candidate's cover letter to the job application.
 
         It overrides any existing cover letter in the application.
+
+        Max file size is 10mb.
       parameters:
         - in: path
           name: id
@@ -475,12 +513,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/RequisitionItem'
-                  pageNumber:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  totalCount:
-                    type: integer
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         400:
           description: Invalid query.
           content:
@@ -737,12 +771,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/JobAdItem'
-                  pageNumber:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  totalCount:
-                    type: integer
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         400:
           description: Invalid query.
           content:
@@ -836,12 +866,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/JobApplicationQuestionAnswer'
-                  pageNumber:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  totalCount:
-                    type: integer
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
         400:
           description: Invalid ID supplied
           content:
@@ -1153,6 +1179,19 @@ components:
           type: string
         transactionId:
           type: string
+    ErrorsGetResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+        transactionId:
+          type: string
     EnumRequisitionStatus:
       type: string
       enum:
@@ -1321,3 +1360,12 @@ components:
         - "SELECT"
         - "MULTISELECT"
         - "FILE"
+    Pagination:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer

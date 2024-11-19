@@ -69,14 +69,8 @@
                                                 "$ref": "#/components/schemas/CandidateItem"
                                             }
                                         },
-                                        "pageNumber": {
-                                            "type": "integer"
-                                        },
-                                        "pageSize": {
-                                            "type": "integer"
-                                        },
-                                        "totalCount": {
-                                            "type": "integer"
+                                        "pagination": {
+                                            "$ref": "#/components/schemas/Pagination"
                                         }
                                     }
                                 }
@@ -133,6 +127,46 @@
                 "responses": {
                     "201": {
                         "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorsGetResponse"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal Server error.",
@@ -293,14 +327,8 @@
                                                 "$ref": "#/components/schemas/JobApplicationItem"
                                             }
                                         },
-                                        "pageNumber": {
-                                            "type": "integer"
-                                        },
-                                        "pageSize": {
-                                            "type": "integer"
-                                        },
-                                        "totalCount": {
-                                            "type": "integer"
+                                        "pagination": {
+                                            "$ref": "#/components/schemas/Pagination"
                                         }
                                     }
                                 }
@@ -358,12 +386,42 @@
                     "201": {
                         "description": "Created"
                     },
-                    "403": {
-                        "description": "Forbidden.",
+                    "400": {
+                        "description": "Bad Request",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ErrorGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorGetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorsGetResponse"
                                 }
                             }
                         }
@@ -529,7 +587,7 @@
                     "Job Application"
                 ],
                 "summary": "Upload the candidate's resume to the job application.",
-                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n",
+                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 10mb.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -654,7 +712,7 @@
                     "Job Application"
                 ],
                 "summary": "Upload the candidate's cover letter to the job application.",
-                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n",
+                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 10mb.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -749,14 +807,8 @@
                                                 "$ref": "#/components/schemas/RequisitionItem"
                                             }
                                         },
-                                        "pageNumber": {
-                                            "type": "integer"
-                                        },
-                                        "pageSize": {
-                                            "type": "integer"
-                                        },
-                                        "totalCount": {
-                                            "type": "integer"
+                                        "pagination": {
+                                            "$ref": "#/components/schemas/Pagination"
                                         }
                                     }
                                 }
@@ -1175,14 +1227,8 @@
                                                 "$ref": "#/components/schemas/JobAdItem"
                                             }
                                         },
-                                        "pageNumber": {
-                                            "type": "integer"
-                                        },
-                                        "pageSize": {
-                                            "type": "integer"
-                                        },
-                                        "totalCount": {
-                                            "type": "integer"
+                                        "pagination": {
+                                            "$ref": "#/components/schemas/Pagination"
                                         }
                                     }
                                 }
@@ -1336,14 +1382,8 @@
                                                 "$ref": "#/components/schemas/JobApplicationQuestionAnswer"
                                             }
                                         },
-                                        "pageNumber": {
-                                            "type": "integer"
-                                        },
-                                        "pageSize": {
-                                            "type": "integer"
-                                        },
-                                        "totalCount": {
-                                            "type": "integer"
+                                        "pagination": {
+                                            "$ref": "#/components/schemas/Pagination"
                                         }
                                     }
                                 }
@@ -1806,6 +1846,26 @@
                     }
                 }
             },
+            "ErrorsGetResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "transactionId": {
+                        "type": "string"
+                    }
+                }
+            },
             "EnumRequisitionStatus": {
                 "type": "string",
                 "enum": [
@@ -2040,6 +2100,20 @@
                     "MULTISELECT",
                     "FILE"
                 ]
+            },
+            "Pagination": {
+                "type": "object",
+                "properties": {
+                    "pageNumber": {
+                        "type": "integer"
+                    },
+                    "pageSize": {
+                        "type": "integer"
+                    },
+                    "totalCount": {
+                        "type": "integer"
+                    }
+                }
             }
         }
     }
