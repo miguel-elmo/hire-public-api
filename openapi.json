@@ -587,7 +587,7 @@
                     "Job Application"
                 ],
                 "summary": "Upload the candidate's resume to the job application.",
-                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 10mb.\n",
+                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5mb.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -712,7 +712,7 @@
                     "Job Application"
                 ],
                 "summary": "Upload the candidate's cover letter to the job application.",
-                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 10mb.\n",
+                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5mb.\n",
                 "parameters": [
                     {
                         "in": "path",

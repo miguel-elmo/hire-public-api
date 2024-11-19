@@ -368,7 +368,7 @@ paths:
 
         It overrides any existing resume in the application.
 
-        Max file size is 10mb.
+        Max file size is 5mb.
       parameters:
         - in: path
           name: id
@@ -452,7 +452,7 @@ paths:
 
         It overrides any existing cover letter in the application.
 
-        Max file size is 10mb.
+        Max file size is 5mb.
       parameters:
         - in: path
           name: id
