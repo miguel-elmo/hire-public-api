@@ -3,11 +3,11 @@
     "info": {
         "title": "Recruitment's Public API",
         "description": "Collection of Public API for 3rd party integration with ELMO's Recruitment.",
-        "version": "v2"
+        "version": "v1"
     },
     "servers": [
         {
-            "url": "https://[tenant].elmotalent.com.au/api/recruitment/v2"
+            "url": "https://[tenant].elmotalent.com.au/api/recruitment/v1"
         }
     ],
     "paths": {
@@ -17,7 +17,7 @@
                     "Candidate"
                 ],
                 "summary": "Get the list of candidates.",
-                "description": "This endpoint retrieves a list of candidates that in the system and not necessarily have a job application.",
+                "description": "This endpoint retrieves a list of candidates that are in the system and not necessarily have a job application.",
                 "parameters": [
                     {
                         "in": "query",
@@ -63,14 +63,14 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "candidates": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/CandidateItem"
                                             }
                                         },
-                                        "pagination": {
-                                            "$ref": "#/components/schemas/Pagination"
+                                        "metadata": {
+                                            "$ref": "#/components/schemas/MetadataListQuery"
                                         }
                                     }
                                 }
@@ -119,14 +119,21 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Candidate"
+                                "$ref": "#/components/schemas/CandidateCreate"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CandidateQuery"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -205,7 +212,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Candidate"
+                                    "$ref": "#/components/schemas/CandidateQuery"
                                 }
                             }
                         }
@@ -321,14 +328,14 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "applications": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/JobApplicationItem"
                                             }
                                         },
-                                        "pagination": {
-                                            "$ref": "#/components/schemas/Pagination"
+                                        "metadata": {
+                                            "$ref": "#/components/schemas/MetadataListQuery"
                                         }
                                     }
                                 }
@@ -375,16 +382,31 @@
                 "requestBody": {
                     "description": "Create a new Job Application for a Candidate.",
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/CreateJobApplication"
+                                "$ref": "#/components/schemas/JobApplicationCreate"
+                            },
+                            "encoding": {
+                                "resume": {
+                                    "contentType": "application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, application/doc, application/ms-doc, application/msword"
+                                },
+                                "coverLetter": {
+                                    "contentType": "application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, application/doc, application/ms-doc, application/msword"
+                                }
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobApplicationQuery"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -445,7 +467,7 @@
                     "Job Application"
                 ],
                 "summary": "Get all the Job Application's information.",
-                "description": "Job applications are not required to be linked to a specific job advertisement, but they will always be associated with a corresponding requisition.\n\nFor accurately identifying if Job Application is still valid, we have to check Requisition Status as well if it's ie Finalised.\n",
+                "description": "Job applications are not required to be linked to a specific job advertisement, but they will always be associated with a corresponding requisition.\n\nFor accurately identifying if Job Application is still valid, we have to check Requisition Status as well, ie if it's Finalised.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -463,7 +485,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/JobApplication"
+                                    "$ref": "#/components/schemas/JobApplicationQuery"
                                 }
                             }
                         }
@@ -587,7 +609,7 @@
                     "Job Application"
                 ],
                 "summary": "Upload the candidate's resume to the job application.",
-                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5mb.\n",
+                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5 MB.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -599,8 +621,24 @@
                         "description": "ID of the job application."
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Created"
                     },
                     "403": {
@@ -712,7 +750,7 @@
                     "Job Application"
                 ],
                 "summary": "Upload the candidate's cover letter to the job application.",
-                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5mb.\n",
+                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5 MB.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -724,8 +762,24 @@
                         "description": "ID of the job application."
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Created"
                     },
                     "403": {
@@ -801,14 +855,14 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "applications": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/RequisitionItem"
                                             }
                                         },
-                                        "pagination": {
-                                            "$ref": "#/components/schemas/Pagination"
+                                        "metadata": {
+                                            "$ref": "#/components/schemas/MetadataListQuery"
                                         }
                                     }
                                 }
@@ -854,7 +908,7 @@
                     "Requisition"
                 ],
                 "summary": "Get all the Requisition's information.",
-                "description": "Requisition is the basis of everything, it is required on making a JobAd and also when making Job Application.\n\nThe requisition status should affect how Job Ad and Job Application should be treated.\n",
+                "description": "Requisition is the basis of everything, it is required on making a Job Ad and also when making Job Application.\n\nThe requisition status should affect how Job Ad and Job Application should be treated.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -872,253 +926,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Requisition"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID supplied",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Record not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "410": {
-                        "description": "Record is found but not available anymore.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server error.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/job-locations/{id}": {
-            "get": {
-                "tags": [
-                    "Job Location"
-                ],
-                "summary": "Get all the Job Location's information.",
-                "description": "Detailed information of the Job Location.",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "description": "ID of the job location to get."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/JobLocation"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID supplied",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Record not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "410": {
-                        "description": "Record is found but not available anymore.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server error.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/job-categories/{id}": {
-            "get": {
-                "tags": [
-                    "Job Category"
-                ],
-                "summary": "Get all the Job Category's information.",
-                "description": "Detailed information of the Job Category.",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "description": "ID of the job location to get."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/JobCategory"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID supplied",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Record not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "410": {
-                        "description": "Record is found but not available anymore.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server error.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/job-types/{id}": {
-            "get": {
-                "tags": [
-                    "Job Type"
-                ],
-                "summary": "Get all the Job Type's information.",
-                "description": "Detailed information of the Job Type.",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "description": "ID of the job location to get."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/JobType"
+                                    "$ref": "#/components/schemas/RequisitionQuery"
                                 }
                             }
                         }
@@ -1221,14 +1029,14 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "jobAds": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/JobAdItem"
                                             }
                                         },
-                                        "pagination": {
-                                            "$ref": "#/components/schemas/Pagination"
+                                        "metadata": {
+                                            "$ref": "#/components/schemas/MetadataListQuery"
                                         }
                                     }
                                 }
@@ -1292,100 +1100,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/JobAd"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID supplied",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Record not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "410": {
-                        "description": "Record is found but not available anymore.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server error.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorGetResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/job-ads/{id}/screening-questions": {
-            "get": {
-                "tags": [
-                    "Job Ad"
-                ],
-                "summary": "Get all the Job Ad's information.",
-                "description": "Detailed information of the Job Ad.",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "required": true,
-                        "description": "ID of the job ad to get."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "questionAnswers": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/JobApplicationQuestionAnswer"
-                                            }
-                                        },
-                                        "pagination": {
-                                            "$ref": "#/components/schemas/Pagination"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/JobAdQuery"
                                 }
                             }
                         }
@@ -1508,7 +1223,7 @@
                     }
                 }
             },
-            "Candidate": {
+            "CandidateCreate": {
                 "type": "object",
                 "required": [
                     "firstName",
@@ -1573,38 +1288,150 @@
                         "type": "string",
                         "maxLength": 30
                     },
-                    "educations": {
+                    "education": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Education"
+                            "$ref": "#/components/schemas/EducationCreate"
                         }
                     },
                     "languages": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Language"
+                            "$ref": "#/components/schemas/LanguageCreate"
                         }
                     },
-                    "experiences": {
+                    "experience": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Experience"
+                            "$ref": "#/components/schemas/ExperienceCreate"
                         }
                     },
                     "skills": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Skill"
+                            "$ref": "#/components/schemas/SkillCreate"
                         }
                     }
                 }
             },
-            "Education": {
+            "CandidateQuery": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "10"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "John",
+                        "minLength": 3,
+                        "maxLength": 255
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Doe",
+                        "minLength": 3,
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@noreply.com",
+                        "format": "email",
+                        "maxLength": 60
+                    },
+                    "isActive": {
+                        "type": "boolean"
+                    },
+                    "addressLine1": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "addressLine2": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "suburb": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "postcode": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "homePhone": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "education": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EducationQuery"
+                        }
+                    },
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LanguageQuery"
+                        }
+                    },
+                    "experience": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExperienceQuery"
+                        }
+                    },
+                    "skills": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SkillQuery"
+                        }
+                    }
+                }
+            },
+            "EducationCreate": {
                 "type": "object",
                 "required": [
                     "school",
                     "degree"
                 ],
+                "properties": {
+                    "school": {
+                        "type": "string"
+                    },
+                    "degree": {
+                        "type": "string"
+                    },
+                    "fieldOfStudy": {
+                        "type": "string"
+                    },
+                    "activities": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "startDateYear": {
+                        "type": "integer"
+                    },
+                    "endDateYear": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EducationQuery": {
+                "type": "object",
                 "properties": {
                     "id": {
                         "type": "string"
@@ -1632,7 +1459,31 @@
                     }
                 }
             },
-            "Language": {
+            "LanguageCreate": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "name"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "ratingSpeaking": {
+                        "type": "integer"
+                    },
+                    "ratingReading": {
+                        "type": "integer"
+                    },
+                    "ratingWriting": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "LanguageQuery": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -1655,12 +1506,41 @@
                     }
                 }
             },
-            "Experience": {
+            "ExperienceCreate": {
                 "type": "object",
                 "required": [
                     "positionTitle",
                     "companyName"
                 ],
+                "properties": {
+                    "positionTitle": {
+                        "type": "string"
+                    },
+                    "companyName": {
+                        "type": "string"
+                    },
+                    "companyAddress": {
+                        "type": "string"
+                    },
+                    "startDateMonth": {
+                        "type": "string"
+                    },
+                    "startDateYear": {
+                        "type": "integer"
+                    },
+                    "endDateMonth": {
+                        "type": "string"
+                    },
+                    "endDateYear": {
+                        "type": "integer"
+                    },
+                    "isCurrent": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "ExperienceQuery": {
+                "type": "object",
                 "properties": {
                     "id": {
                         "type": "string"
@@ -1691,17 +1571,25 @@
                     }
                 }
             },
-            "Skill": {
+            "SkillCreate": {
                 "type": "object",
                 "required": [
                     "title"
                 ],
                 "properties": {
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SkillQuery": {
+                "type": "object",
+                "properties": {
                     "id": {
                         "type": "string"
                     },
                     "title": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -1725,7 +1613,36 @@
                     }
                 }
             },
-            "JobApplication": {
+            "JobApplicationCreate": {
+                "type": "object",
+                "properties": {
+                    "jobAdId": {
+                        "type": "string"
+                    },
+                    "applicantId": {
+                        "type": "string"
+                    },
+                    "applicantType": {
+                        "type": "string"
+                    },
+                    "resume": {
+                        "type": "string",
+                        "format": "base64",
+                        "description": "Max file size is 5 MB."
+                    },
+                    "coverLetter": {
+                        "type": "string",
+                        "format": "base64",
+                        "description": "Max file size is 5 MB."
+                    }
+                },
+                "required": [
+                    "jobAdId",
+                    "applicantId",
+                    "applicantType"
+                ]
+            },
+            "JobApplicationQuery": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -1747,22 +1664,22 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "questionAnswers": {
+                    "screeningQuestions": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/JobApplicationQuestionAnswer"
+                            "$ref": "#/components/schemas/ScreeningQuestionQuery"
                         }
-                    }
-                }
-            },
-            "CreateJobApplication": {
-                "type": "object",
-                "properties": {
-                    "jobAdId": {
-                        "type": "string"
                     },
-                    "candidateId": {
-                        "type": "string"
+                    "links": {
+                        "type": "object",
+                        "properties": {
+                            "resume": {
+                                "type": "string"
+                            },
+                            "coverLetter": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             },
@@ -1780,7 +1697,7 @@
                     }
                 }
             },
-            "Requisition": {
+            "RequisitionCreate": {
                 "type": "object",
                 "required": [
                     "title",
@@ -1808,6 +1725,36 @@
                     "locationId": {
                         "type": "string"
                     },
+                    "dateDue": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "numberOfPositions": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "RequisitionQuery": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/EnumRequisitionStatus"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
                     "dateCreated": {
                         "type": "string",
                         "format": "date-time"
@@ -1832,16 +1779,19 @@
             "ErrorGetResponse": {
                 "type": "object",
                 "properties": {
-                    "status": {
+                    "type": {
                         "type": "integer"
                     },
                     "error": {
                         "type": "string"
                     },
+                    "status": {
+                        "type": "string"
+                    },
                     "message": {
                         "type": "string"
                     },
-                    "transactionId": {
+                    "instance": {
                         "type": "string"
                     }
                 }
@@ -1849,7 +1799,7 @@
             "ErrorsGetResponse": {
                 "type": "object",
                 "properties": {
-                    "status": {
+                    "type": {
                         "type": "integer"
                     },
                     "errors": {
@@ -1858,10 +1808,13 @@
                             "type": "string"
                         }
                     },
+                    "status": {
+                        "type": "string"
+                    },
                     "message": {
                         "type": "string"
                     },
-                    "transactionId": {
+                    "instance": {
                         "type": "string"
                     }
                 }
@@ -1893,14 +1846,8 @@
                     "OFFER.REJECTED"
                 ]
             },
-            "JobApplicationQuestionAnswer": {
+            "ScreeningQuestionQuery": {
                 "type": "object",
-                "required": [
-                    "question",
-                    "questionType",
-                    "answerValue",
-                    "answerText"
-                ],
                 "properties": {
                     "questionId": {
                         "type": "string"
@@ -1919,23 +1866,8 @@
                     }
                 }
             },
-            "JobAd": {
+            "JobAdQuery": {
                 "type": "object",
-                "required": [
-                    "title",
-                    "dateStart",
-                    "dateEnd",
-                    "salaryMin",
-                    "salaryMax",
-                    "requisitionId",
-                    "jobLocationId",
-                    "jobCategoryIds",
-                    "jobTypeId",
-                    "introduction",
-                    "description",
-                    "shortDescription",
-                    "portalIds"
-                ],
                 "properties": {
                     "id": {
                         "type": "string"
@@ -1962,20 +1894,52 @@
                         "type": "number",
                         "format": "double"
                     },
-                    "requisitionId": {
-                        "type": "string"
-                    },
-                    "jobLocationId": {
-                        "type": "string"
-                    },
-                    "jobCategoryIds": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
+                    "requisition": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "title": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "jobTypeId": {
-                        "type": "string"
+                    "jobLocation": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "title": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "jobCategory": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "jobType": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "title": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "introduction": {
                         "type": "string"
@@ -1992,10 +1956,18 @@
                     "isActive": {
                         "type": "boolean"
                     },
-                    "portalIds": {
+                    "careerPortals": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     },
                     "videoUrl": {
@@ -2006,6 +1978,12 @@
                     },
                     "isEnable": {
                         "type": "boolean"
+                    },
+                    "screeningQuestions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ScreeningQuestionQuery"
+                        }
                     }
                 }
             },
@@ -2031,63 +2009,9 @@
                     },
                     "isEnable": {
                         "type": "boolean"
-                    }
-                }
-            },
-            "JobCategory": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
                     },
-                    "name": {
+                    "requisitionId": {
                         "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "isActive": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "JobLocation": {
-                "type": "object",
-                "required": [
-                    "title"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "isActive": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "JobType": {
-                "type": "object",
-                "required": [
-                    "title"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "isActive": {
-                        "type": "boolean"
                     }
                 }
             },
@@ -2104,14 +2028,22 @@
             "Pagination": {
                 "type": "object",
                 "properties": {
-                    "pageNumber": {
+                    "page": {
                         "type": "integer"
                     },
-                    "pageSize": {
+                    "itemsPerPage": {
                         "type": "integer"
                     },
-                    "totalCount": {
+                    "totalItems": {
                         "type": "integer"
+                    }
+                }
+            },
+            "MetadataListQuery": {
+                "type": "object",
+                "properties": {
+                    "pagination": {
+                        "$ref": "#/components/schemas/Pagination"
                     }
                 }
             }
