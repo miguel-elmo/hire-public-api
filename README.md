@@ -1,11 +1,10 @@
 # Requisitions
-Is the foundation of all job recruitment process.
-We start by having a requisition before we are able to create Job Ad and Job Application into our system.
+Creating a requisition is the first step in the recruitment process as they form the foundation of all recruitment activities for a job. A requisition must first exist before Job Ads can be posted, and all job applications received are tracked within the Requisition.
 
 # Job Ad
-We can create multiple Job Ad under the same Requisition with different description, dates, etc.
+Multiple Job Ads can be posted per Requisition, and each can have individual settings and details. E.g. different location, description, dates, etc.
 
 # Job Application
-We can create Job Application directly to the Requisition or User or Candidates can apply through Job Ads.
+Job Applications are created within the Requisition when candidates apply to a Job Ad. Job Applications can also be created directly in the Requisition by an ELMO user. (edited) 
 
 
