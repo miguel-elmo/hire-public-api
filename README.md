@@ -10,8 +10,7 @@ Job Applications are created within the Requisition when candidates apply to a J
 # Planned Release for the endpoints
 
 ## Phase 1: Target Date 31/01/2025
-This should support the basis of Phase 1 for Decird were they 
-
+The following endpoints should support the basis of Phase 1, to be able to push a new candidate to ELMO: 
 - Query Requisition
 - Query Job Ad List
 - Query Job Ad
