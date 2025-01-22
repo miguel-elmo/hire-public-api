@@ -188,9 +188,6 @@ components:
                 - lastName
                 - email
             properties:
-                id:
-                    type: string
-                    example: "10"
                 firstName:
                     type: string
                     example: "John"
