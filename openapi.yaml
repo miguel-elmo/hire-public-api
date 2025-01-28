@@ -1,12 +1,10 @@
 openapi: 3.0.0
 info:
     title: Recruitment's Public API
-    description: |-
-        Collection of Public API for 3rd party integration with ELMO's Recruitment.
+    description: Collection of Public API for 3rd party integration with ELMO's Recruitment.
     version: v1
 servers:
     - url: https://[tenant].elmotalent.com.au/api/recruitment/v1
-
 paths:
     /candidates/discovery:
         post:
@@ -16,53 +14,53 @@ paths:
             requestBody:
                 description: This creates a Candidate with a discovery status under the given Job Ad.
                 content:
-                    multipart/form-data:
+                    application/json:
                         schema:
                             $ref: '#/components/schemas/CandidateDiscoveryCreate'
             responses:
-                201:
+                '201':
                     description: Created
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/CandidateDiscoveryQuery'
-                400:
+                '400':
                     description: Bad Request
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                401:
+                '401':
                     description: Unauthorized
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                403:
+                '403':
                     description: Forbidden
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                422:
+                '422':
                     description: Unprocessable Content
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorsGetResponse'
-                500:
+                '500':
                     description: Internal Server error.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
     /candidates/discovery/{id}/resume:
-        put:
+        post:
             tags:
-                - Job Application
-            summary: Upload the candidate's cover letter to the job application.
+                - Candidate Discovery
+            summary: Upload the candidate's cover letter to the Candidate Discovery.
             description: |
-                Upload the candidate's cover letter to the job application.
+                Upload the candidate's cover letter to the Candidate Discovery.
 
                 It overrides any existing cover letter in the application.
 
@@ -73,7 +71,7 @@ paths:
                   schema:
                       type: string
                   required: true
-                  description: ID of the job application.
+                  description: ID of the Candidate Discovery.
             requestBody:
                 content:
                     multipart/form-data:
@@ -85,39 +83,39 @@ paths:
                                     format: binary
                                     description: The file to upload
             responses:
-                200:
+                '200':
                     description: Created
-                403:
+                '403':
                     description: Forbidden.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                413:
+                '413':
                     description: Exceeded the file size limit.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                415:
+                '415':
                     description: Invalid file type.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                500:
+                '500':
                     description: Internal Server error.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
     /candidates/discovery/{id}/cover-letter:
-        put:
+        post:
             tags:
-                - Job Application
-            summary: Upload the candidate's resume to the job application.
+                - Candidate Discovery
+            summary: Upload the candidate's resume to the Candidate Discovery.
             description: |
-                Upload the candidate's resume to the job application.
+                Upload the candidate's resume to the Candidate Discovery.
 
                 It overrides any existing resume in the application.
 
@@ -128,7 +126,7 @@ paths:
                   schema:
                       type: string
                   required: true
-                  description: ID of the job application.
+                  description: ID of the Candidate Discovery.
             requestBody:
                 content:
                     multipart/form-data:
@@ -140,33 +138,32 @@ paths:
                                     format: binary
                                     description: The file to upload
             responses:
-                200:
+                '200':
                     description: Created
-                403:
+                '403':
                     description: Forbidden.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                413:
+                '413':
                     description: Exceeded the file size limit.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                415:
+                '415':
                     description: Invalid file type.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-                500:
+                '500':
                     description: Internal Server error.
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ErrorGetResponse'
-
 components:
     schemas:
         CandidateDiscoveryCreate:
@@ -175,12 +172,10 @@ components:
                 jobAdId:
                     type: string
                 candidate:
-                    type: object
                     $ref: '#/components/schemas/CandidateCreate'
             required:
                 - jobAdId
                 - candidate
-
         CandidateCreate:
             type: object
             required:
@@ -190,17 +185,17 @@ components:
             properties:
                 firstName:
                     type: string
-                    example: "John"
+                    example: John
                     minLength: 3
                     maxLength: 255
                 lastName:
                     type: string
-                    example: "Doe"
+                    example: Doe
                     minLength: 3
                     maxLength: 255
                 email:
                     type: string
-                    example: "john.doe@noreply.com"
+                    example: john.doe@noreply.com
                     format: email
                     maxLength: 60
                 addressLine1:
@@ -243,26 +238,25 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/SkillCreate'
-
         CandidateQuery:
             type: object
             properties:
                 id:
                     type: string
-                    example: "10"
+                    example: '10'
                 firstName:
                     type: string
-                    example: "John"
+                    example: John
                     minLength: 3
                     maxLength: 255
                 lastName:
                     type: string
-                    example: "Doe"
+                    example: Doe
                     minLength: 3
                     maxLength: 255
                 email:
                     type: string
-                    example: "john.doe@noreply.com"
+                    example: john.doe@noreply.com
                     format: email
                     maxLength: 60
                 addressLine1:
@@ -305,7 +299,6 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/SkillQuery'
-
         EducationCreate:
             type: object
             required:
@@ -316,6 +309,8 @@ components:
                     type: string
                 degree:
                     type: string
+                grade:
+                    type: string
                 fieldOfStudy:
                     type: string
                 activities:
@@ -326,7 +321,6 @@ components:
                     type: integer
                 endDateYear:
                     type: integer
-
         EducationQuery:
             type: object
             properties:
@@ -336,6 +330,8 @@ components:
                     type: string
                 degree:
                     type: string
+                grade:
+                    type: string
                 fieldOfStudy:
                     type: string
                 activities:
@@ -346,7 +342,6 @@ components:
                     type: integer
                 endDateYear:
                     type: integer
-
         LanguageCreate:
             type: object
             required:
@@ -363,7 +358,6 @@ components:
                     type: integer
                 ratingWriting:
                     type: integer
-
         LanguageQuery:
             type: object
             properties:
@@ -379,7 +373,6 @@ components:
                     type: integer
                 ratingWriting:
                     type: integer
-
         ExperienceCreate:
             type: object
             required:
@@ -393,16 +386,15 @@ components:
                 companyAddress:
                     type: string
                 startDateMonth:
-                    type: string
+                    type: integer
                 startDateYear:
                     type: integer
                 endDateMonth:
-                    type: string
+                    type: integer
                 endDateYear:
                     type: integer
                 isCurrent:
                     type: boolean
-
         ExperienceQuery:
             type: object
             properties:
@@ -415,16 +407,15 @@ components:
                 companyAddress:
                     type: string
                 startDateMonth:
-                    type: string
+                    type: integer
                 startDateYear:
                     type: integer
                 endDateMonth:
-                    type: string
+                    type: integer
                 endDateYear:
                     type: integer
                 isCurrent:
                     type: boolean
-
         SkillCreate:
             type: object
             required:
@@ -432,7 +423,6 @@ components:
             properties:
                 title:
                     type: string
-
         SkillQuery:
             type: object
             properties:
@@ -440,7 +430,6 @@ components:
                     type: string
                 title:
                     type: string
-
         CandidateDiscoveryQuery:
             type: object
             properties:
@@ -456,7 +445,6 @@ components:
                     items:
                         $ref: '#/components/schemas/ScreeningQuestionQuery'
                 candidate:
-                    type: object
                     $ref: '#/components/schemas/CandidateQuery'
                 links:
                     type: object
@@ -465,7 +453,6 @@ components:
                             type: string
                         coverLetter:
                             type: string
-
         ErrorGetResponse:
             type: object
             properties:
@@ -479,7 +466,6 @@ components:
                     type: string
                 instance:
                     type: string
-
         ErrorsGetResponse:
             type: object
             properties:
@@ -495,7 +481,6 @@ components:
                     type: string
                 instance:
                     type: string
-
         ScreeningQuestionQuery:
             type: object
             properties:
@@ -509,16 +494,14 @@ components:
                     type: string
                 answerText:
                     type: string
-
         EnumQuestionTypes:
             type: string
             enum:
-                - "TEXT"
-                - "DATE"
-                - "SELECT"
-                - "MULTISELECT"
-                - "FILE"
-
+                - TEXT
+                - DATE
+                - SELECT
+                - MULTISELECT
+                - FILE
         Pagination:
             type: object
             properties:
@@ -528,7 +511,6 @@ components:
                     type: integer
                 totalItems:
                     type: integer
-
         MetadataListQuery:
             type: object
             properties:

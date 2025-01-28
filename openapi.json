@@ -20,7 +20,7 @@
                 "requestBody": {
                     "description": "This creates a Candidate with a discovery status under the given Job Ad.",
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/CandidateDiscoveryCreate"
                             }
@@ -92,12 +92,12 @@
             }
         },
         "/candidates/discovery/{id}/resume": {
-            "put": {
+            "post": {
                 "tags": [
-                    "Job Application"
+                    "Candidate Discovery"
                 ],
-                "summary": "Upload the candidate's cover letter to the job application.",
-                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5 MB.\n",
+                "summary": "Upload the candidate's cover letter to the Candidate Discovery.",
+                "description": "Upload the candidate's cover letter to the Candidate Discovery.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5 MB.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -106,7 +106,7 @@
                             "type": "string"
                         },
                         "required": true,
-                        "description": "ID of the job application."
+                        "description": "ID of the Candidate Discovery."
                     }
                 ],
                 "requestBody": {
@@ -173,12 +173,12 @@
             }
         },
         "/candidates/discovery/{id}/cover-letter": {
-            "put": {
+            "post": {
                 "tags": [
-                    "Job Application"
+                    "Candidate Discovery"
                 ],
-                "summary": "Upload the candidate's resume to the job application.",
-                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5 MB.\n",
+                "summary": "Upload the candidate's resume to the Candidate Discovery.",
+                "description": "Upload the candidate's resume to the Candidate Discovery.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5 MB.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -187,7 +187,7 @@
                             "type": "string"
                         },
                         "required": true,
-                        "description": "ID of the job application."
+                        "description": "ID of the Candidate Discovery."
                     }
                 ],
                 "requestBody": {
@@ -263,7 +263,6 @@
                         "type": "string"
                     },
                     "candidate": {
-                        "type": "object",
                         "$ref": "#/components/schemas/CandidateCreate"
                     }
                 },
@@ -280,10 +279,6 @@
                     "email"
                 ],
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "example": "10"
-                    },
                     "firstName": {
                         "type": "string",
                         "example": "John",
@@ -456,6 +451,9 @@
                     "degree": {
                         "type": "string"
                     },
+                    "grade": {
+                        "type": "string"
+                    },
                     "fieldOfStudy": {
                         "type": "string"
                     },
@@ -483,6 +481,9 @@
                         "type": "string"
                     },
                     "degree": {
+                        "type": "string"
+                    },
+                    "grade": {
                         "type": "string"
                     },
                     "fieldOfStudy": {
@@ -566,13 +567,13 @@
                         "type": "string"
                     },
                     "startDateMonth": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "startDateYear": {
                         "type": "integer"
                     },
                     "endDateMonth": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "endDateYear": {
                         "type": "integer"
@@ -598,13 +599,13 @@
                         "type": "string"
                     },
                     "startDateMonth": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "startDateYear": {
                         "type": "integer"
                     },
                     "endDateMonth": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "endDateYear": {
                         "type": "integer"
@@ -656,7 +657,6 @@
                         }
                     },
                     "candidate": {
-                        "type": "object",
                         "$ref": "#/components/schemas/CandidateQuery"
                     },
                     "links": {
