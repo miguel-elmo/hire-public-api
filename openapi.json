@@ -92,12 +92,12 @@
             }
         },
         "/candidates/discovery/{id}/resume": {
-            "post": {
+            "put": {
                 "tags": [
-                    "Candidate Discovery"
+                    "Job Application"
                 ],
-                "summary": "Upload the candidate's cover letter to the Candidate Discovery.",
-                "description": "Upload the candidate's cover letter to the Candidate Discovery.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5 MB.\n",
+                "summary": "Upload the candidate's cover letter to the job application.",
+                "description": "Upload the candidate's cover letter to the job application.\n\nIt overrides any existing cover letter in the application.\n\nMax file size is 5 MB.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -106,7 +106,7 @@
                             "type": "string"
                         },
                         "required": true,
-                        "description": "ID of the Candidate Discovery."
+                        "description": "ID of the job application."
                     }
                 ],
                 "requestBody": {
@@ -173,12 +173,12 @@
             }
         },
         "/candidates/discovery/{id}/cover-letter": {
-            "post": {
+            "put": {
                 "tags": [
-                    "Candidate Discovery"
+                    "Job Application"
                 ],
-                "summary": "Upload the candidate's resume to the Candidate Discovery.",
-                "description": "Upload the candidate's resume to the Candidate Discovery.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5 MB.\n",
+                "summary": "Upload the candidate's resume to the job application.",
+                "description": "Upload the candidate's resume to the job application.\n\nIt overrides any existing resume in the application.\n\nMax file size is 5 MB.\n",
                 "parameters": [
                     {
                         "in": "path",
@@ -187,7 +187,7 @@
                             "type": "string"
                         },
                         "required": true,
-                        "description": "ID of the Candidate Discovery."
+                        "description": "ID of the job application."
                     }
                 ],
                 "requestBody": {
@@ -279,6 +279,11 @@
                     "email"
                 ],
                 "properties": {
+                    "id": {
+                        "description": "Third party ID of the candidate.",
+                        "type": "string",
+                        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    },
                     "firstName": {
                         "type": "string",
                         "example": "John",
@@ -657,6 +662,7 @@
                         }
                     },
                     "candidate": {
+                        "type": "object",
                         "$ref": "#/components/schemas/CandidateQuery"
                     },
                     "links": {

@@ -183,6 +183,10 @@ components:
                 - lastName
                 - email
             properties:
+                id:
+                    description: 'Third party ID of the candidate.'
+                    type: string
+                    example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
                 firstName:
                     type: string
                     example: John
