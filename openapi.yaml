@@ -190,12 +190,10 @@ components:
                 firstName:
                     type: string
                     example: John
-                    minLength: 3
                     maxLength: 255
                 lastName:
                     type: string
                     example: Doe
-                    minLength: 3
                     maxLength: 255
                 email:
                     type: string

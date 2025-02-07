@@ -279,21 +279,14 @@
                     "email"
                 ],
                 "properties": {
-                    "id": {
-                        "description": "Third party ID of the candidate.",
-                        "type": "string",
-                        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                    },
                     "firstName": {
                         "type": "string",
                         "example": "John",
-                        "minLength": 3,
                         "maxLength": 255
                     },
                     "lastName": {
                         "type": "string",
                         "example": "Doe",
-                        "minLength": 3,
                         "maxLength": 255
                     },
                     "email": {
